@@ -1,16 +1,14 @@
 ﻿using System.Linq;
 using System.Collections;
-using System.Collections.Generic;
 
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 using TMPro;
 
 public class MainMenuInterfaceManager : MonoBehaviour
 {
-
     private Startup startup;
 
     public GameObject StoreItemPrefab;
@@ -18,8 +16,6 @@ public class MainMenuInterfaceManager : MonoBehaviour
     public GameObject StoreUI;
     public GameObject StorePlayerSpritesUI;
     public GameObject StorePlayerTrailsUI;
-
-    private List<Button> PlayerSpriteBuyButtons, PlayerTrailsBuyButtons;
 
     void Awake()
     {
@@ -59,7 +55,7 @@ public class MainMenuInterfaceManager : MonoBehaviour
         {
             if (GameObject.Find("PlayerSpritesScrollView/Viewport/Content").transform.childCount == 0)
                 GeneratePlayerSpritesStoreItems();
-            RefreshPlayerSpriteStoreUI();
+
             RefreshNeonBlocksLabels();
         }
 
@@ -84,8 +80,6 @@ public class MainMenuInterfaceManager : MonoBehaviour
 
             if (GameObject.Find("PlayerTrailsScrollView/Viewport/Content").transform.childCount == 0)
                 GeneratePlayerTrailsStoreItems();
-
-            RefreshPlayerTrailStoreUI();
         }
         else
         {
@@ -112,7 +106,6 @@ public class MainMenuInterfaceManager : MonoBehaviour
     //--START-- PlayerSprite
     private void GeneratePlayerSpritesStoreItems()
     {
-        PlayerSpriteBuyButtons = new List<Button>();
         GameObject Content = GameObject.Find("PlayerSpritesScrollView/Viewport/Content");
         Content.GetComponent<RectTransform>().sizeDelta = new Vector2(0.0f, startup.playerSprites.Length * 340.0f - 40.0f);
 
@@ -120,7 +113,6 @@ public class MainMenuInterfaceManager : MonoBehaviour
         {
             for (int i = 0; i < startup.playerSprites.Length; i++)
             {
-
                 GameObject newStoreItmeObj = Instantiate(StoreItemPrefab, StoreItemPrefab.transform.position, StoreItemPrefab.transform.rotation);
                 RectTransform rt = newStoreItmeObj.GetComponent<RectTransform>();
 
@@ -130,53 +122,39 @@ public class MainMenuInterfaceManager : MonoBehaviour
                 Image image = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({i})/Image").GetComponent<Image>();
                 TextMeshProUGUI costValue = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({i})/Panel/CostLabel/CostValue").GetComponent<TextMeshProUGUI>();
                 Button button = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({i})/Panel/ButtonBuy").GetComponent<Button>();
+                TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({i})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
 
                 rt.anchoredPosition = new Vector2(0.0f, -150.0f - (i * 340.0f));
 
                 image.sprite = startup.playerSprites[i].sprite;
                 costValue.text = $"{startup.playerSprites[i].cost}";
 
-                int itemCount = i;
+                PlayerSprite playerSprite = startup.playerSprites.Where(x => x.id == i).First();
 
-                PlayerSpriteBuyButtons.Add(button);
-
-                button.onClick.AddListener(() =>
+                if (startup.ownedPlayerSpirtes.Contains(i))
                 {
-                    BuyPlayerSprite(itemCount);
-                });
-            }
-        }
-    }
+                    costValue.text = "Posiadane";
 
-    private void RefreshPlayerSpriteStoreUI()
-    {
-        for (int i = 0; i < PlayerSpriteBuyButtons.Count; i++)
-        {
+                    buttonLabel.text = "Użyj";
 
-            TextMeshProUGUI costValue = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({i})/Panel/CostLabel/CostValue").GetComponent<TextMeshProUGUI>();
-            Button button = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({i})/Panel/ButtonBuy").GetComponent<Button>();
-            TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({i})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
-
-            int itemCount = i;
-
-            button.interactable = true;
-
-            if (startup.ownedPlayerSpirtes.Contains(i))
-            {
-                costValue.text = "Posiadane";
-
-                buttonLabel.text = "Użyj";
-
-                button.onClick.AddListener(() =>
+                    button.onClick.AddListener(() =>
+                    {
+                        UsePlayerSprite(playerSprite.id);
+                    });
+                }
+                else
                 {
-                    UsePlayerSprite(itemCount);
-                });
-            }
+                    button.onClick.AddListener(() =>
+                    {
+                        BuyPlayerSprite(playerSprite.id);
+                    });
+                }
 
-            if (itemCount == startup.currentPlayerSprite.id)
-            {
-                button.interactable = false;
-                buttonLabel.text = "Używane";
+                if (playerSprite.id == startup.currentPlayerSprite.id)
+                {
+                    button.interactable = false;
+                    buttonLabel.text = "Używane";
+                }
             }
         }
     }
@@ -188,17 +166,45 @@ public class MainMenuInterfaceManager : MonoBehaviour
             if (startup.DecreaseNeonBlocks(startup.playerSprites.Where(x => x.id == id).Select(x => x.cost).First()))
             {
                 startup.ownedPlayerSpirtes.Add(id);
-                RefreshPlayerSpriteStoreUI();
+                RefreshBuyPlayerSpriteLabels(id);
                 RefreshNeonBlocksLabels();
             }
-
         }
     }
 
     private void UsePlayerSprite(int id)
     {
+        PlayerSprite playerSpriteTmp = startup.currentPlayerSprite;
         startup.currentPlayerSprite = startup.playerSprites[id];
-        RefreshPlayerSpriteStoreUI();
+        RefreshUsePlayerSpriteLabels(playerSpriteTmp.id, id);
+    }
+
+    private void RefreshBuyPlayerSpriteLabels(int id)
+    {
+        Button button = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({id})/Panel/ButtonBuy").GetComponent<Button>();
+        TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({id})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
+
+        buttonLabel.text = "Użyj";
+
+        button.onClick.AddListener(() =>
+        {
+            UsePlayerSprite(id);
+        });
+    }
+
+    private void RefreshUsePlayerSpriteLabels(int currentId, int targetId)
+    {
+        Button button = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({currentId})/Panel/ButtonBuy").GetComponent<Button>();
+        TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({currentId})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
+
+        button.interactable = true;
+        buttonLabel.text = "Użyj";
+
+        button = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({targetId})/Panel/ButtonBuy").GetComponent<Button>();
+        buttonLabel = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({targetId})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
+
+        button.interactable = false;
+        buttonLabel.text = "Używane";
     }
 
     //--END-- PlayerSprite
@@ -207,7 +213,6 @@ public class MainMenuInterfaceManager : MonoBehaviour
 
     private void GeneratePlayerTrailsStoreItems()
     {
-        PlayerTrailsBuyButtons = new List<Button>();
         GameObject Content = GameObject.Find("PlayerTrailsScrollView/Viewport/Content");
         Content.GetComponent<RectTransform>().sizeDelta = new Vector2(0.0f, startup.playerTrails.Length * 340.0f - 40.0f);
 
@@ -215,7 +220,6 @@ public class MainMenuInterfaceManager : MonoBehaviour
         {
             for (int i = 0; i < startup.playerTrails.Length; i++)
             {
-
                 GameObject newStoreItmeObj = Instantiate(StoreItemPrefab, StoreItemPrefab.transform.position, StoreItemPrefab.transform.rotation);
                 RectTransform rt = newStoreItmeObj.GetComponent<RectTransform>();
 
@@ -225,53 +229,39 @@ public class MainMenuInterfaceManager : MonoBehaviour
                 Image image = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({i})/Image").GetComponent<Image>();
                 TextMeshProUGUI costValue = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({i})/Panel/CostLabel/CostValue").GetComponent<TextMeshProUGUI>();
                 Button button = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({i})/Panel/ButtonBuy").GetComponent<Button>();
+                TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({i})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
 
                 rt.anchoredPosition = new Vector2(0.0f, -150.0f - (i * 340.0f));
 
-                //image.sprite = startup.trailColors[i].sprite;
+                image.sprite = startup.playerTrails[i].sprite;
                 costValue.text = $"{startup.playerTrails[i].cost}";
 
-                int itemCount = i;
+                PlayerTrail playerTrail = startup.playerTrails.Where(x => x.id == i).First();
 
-                PlayerTrailsBuyButtons.Add(button);
-
-                button.onClick.AddListener(() =>
+                if (startup.ownedPlayerTrails.Contains(playerTrail.id))
                 {
-                    BuyPlayerTrail(itemCount);
-                });
-            }
-        }
-    }
+                    costValue.text = "Posiadane";
 
-    private void RefreshPlayerTrailStoreUI()
-    {
-        for (int i = 0; i < PlayerTrailsBuyButtons.Count; i++)
-        {
+                    buttonLabel.text = "Użyj";
 
-            TextMeshProUGUI costValue = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({i})/Panel/CostLabel/CostValue").GetComponent<TextMeshProUGUI>();
-            Button button = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({i})/Panel/ButtonBuy").GetComponent<Button>();
-            TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({i})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
-
-            int itemCount = i;
-
-            button.interactable = true;
-
-            if (startup.ownedPlayerTrails.Contains(i))
-            {
-                costValue.text = "Posiadane";
-
-                buttonLabel.text = "Użyj";
-
-                button.onClick.AddListener(() =>
+                    button.onClick.AddListener(() =>
+                    {
+                        UsePlayerTrail(playerTrail.id);
+                    });
+                }
+                else
                 {
-                    UsePlayerTrail(itemCount);
-                });
-            }
+                    button.onClick.AddListener(() =>
+                    {
+                        BuyPlayerTrail(playerTrail.id);
+                    });
+                }
 
-            if (itemCount == startup.currentPlayerTrail.id)
-            {
-                button.interactable = false;
-                buttonLabel.text = "Używane";
+                if (playerTrail.id == startup.currentPlayerTrail.id)
+                {
+                    button.interactable = false;
+                    buttonLabel.text = "Używane";
+                }
             }
         }
     }
@@ -283,7 +273,7 @@ public class MainMenuInterfaceManager : MonoBehaviour
             if (startup.DecreaseNeonBlocks(startup.playerTrails.Where(x => x.id == id).Select(x => x.cost).First()))
             {
                 startup.ownedPlayerTrails.Add(id);
-                RefreshPlayerTrailStoreUI();
+                RefreshBuyPlayerTrailLabels(id);
                 RefreshNeonBlocksLabels();
             }
         }
@@ -291,17 +281,47 @@ public class MainMenuInterfaceManager : MonoBehaviour
 
     private void UsePlayerTrail(int id)
     {
-        startup.currentPlayerTrail = startup.playerTrails[id];
-        RefreshPlayerTrailStoreUI();
+        PlayerTrail playerTrailTmp = startup.currentPlayerTrail;
+        startup.currentPlayerTrail = startup.playerTrails.Where(x => x.id == id).First();
+
+        RefreshUsePlayerTrailLabels(playerTrailTmp.id, startup.currentPlayerTrail.id);
+    }
+
+    private void RefreshBuyPlayerTrailLabels(int id)
+    {
+        Button button = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({id})/Panel/ButtonBuy").GetComponent<Button>();
+        TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({id})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
+
+        buttonLabel.text = "Użyj";
+
+        button.onClick.AddListener(() =>
+        {
+            UsePlayerTrail(id);
+        });
+    }
+
+    private void RefreshUsePlayerTrailLabels(int currentId, int targetId)
+    {
+        Button button = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({currentId})/Panel/ButtonBuy").GetComponent<Button>();
+        TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({currentId})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
+
+        button.interactable = true;
+        buttonLabel.text = "Użyj";
+
+        button = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({targetId})/Panel/ButtonBuy").GetComponent<Button>();
+        buttonLabel = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({targetId})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
+
+        button.interactable = false;
+        buttonLabel.text = "Używane";
     }
 
     //--END-- PlayerTrail
 
     public void RefreshNeonBlocksLabels()
     {
-        int rb = startup.GetNeonBlocks();
+        int nb = startup.GetNeonBlocks();
 
-        GameObject.Find("StoreNeonBlocksLabel").GetComponent<TextMeshProUGUI>().text = $"RB: {rb}";
-        GameObject.Find("NeonBlocksText").GetComponent<TextMeshProUGUI>().text = rb.ToString();
+        GameObject.Find("StoreNeonBlocksLabel").GetComponent<TextMeshProUGUI>().text = $"NB: {nb}";
+        GameObject.Find("NeonBlocksText").GetComponent<TextMeshProUGUI>().text = nb.ToString();
     }
 }

@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerTrail : ScriptableObject
 {
     public int id;
+    public Sprite sprite;
     public Material material;
     public LineTextureMode TextureMode;
     public int cost;

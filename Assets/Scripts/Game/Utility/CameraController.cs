@@ -4,15 +4,8 @@ using UnityEngine.Rendering.Universal;
 
 public class CameraController : MonoBehaviour
 {
-
     private GameManager gameManager;
     private GameObject player;
-
-    private Volume volume;
-    private ChromaticAberration chromaticAberration;
-    private float chromaticAberrationIntensityVelocity;
-    private ColorAdjustments colorAdjustments;
-    private float colorAdjustmentsSaturationVelocity;
 
     private Camera cam;
     private Vector2 cameraPositionVelocity;
@@ -22,6 +15,13 @@ public class CameraController : MonoBehaviour
     internal bool defaultZoom;
     private float cameraZoomSizingVelocity;
     public float minZoomOut, maxZoomOut, smoothZoomOut, smoothZoomIn;
+
+    private Volume volume;
+    private ChromaticAberration chromaticAberration;
+    private float chromaticAberrationIntensityVelocity;
+    private ColorAdjustments colorAdjustments;
+    private float colorAdjustmentsSaturationVelocity;
+    public float defaultChromaticAberration, targetValueChromaticAberration, defaultSaturationValue, targetSaturationValue;
 
     private void Awake()
     {
@@ -50,7 +50,9 @@ public class CameraController : MonoBehaviour
             }
 
             if (defaultZoom)
+            {
                 DefaultZoom();
+            }
         }
     }
 
@@ -58,19 +60,19 @@ public class CameraController : MonoBehaviour
     {
         float targetSize = Mathf.Clamp(rbVelocity, minZoomOut, maxZoomOut);
         float size = Mathf.SmoothDamp(cam.orthographicSize, targetSize, ref cameraZoomSizingVelocity, smoothZoomOut);
-        chromaticAberration.intensity.value = Mathf.SmoothDamp(chromaticAberration.intensity.value, 1.0f, ref chromaticAberrationIntensityVelocity, smoothZoomOut);
-        colorAdjustments.saturation.value = Mathf.SmoothDamp(colorAdjustments.saturation.value, -60.0f, ref colorAdjustmentsSaturationVelocity, smoothZoomOut);
+        chromaticAberration.intensity.value = Mathf.SmoothDamp(chromaticAberration.intensity.value, targetValueChromaticAberration, ref chromaticAberrationIntensityVelocity, smoothZoomOut);
+        colorAdjustments.saturation.value = Mathf.SmoothDamp(colorAdjustments.saturation.value, targetSaturationValue, ref colorAdjustmentsSaturationVelocity, smoothZoomOut);
         cam.orthographicSize = size;
     }
 
     public void DefaultZoom()
     {
         float size = Mathf.SmoothDamp(cam.orthographicSize, minZoomOut, ref cameraZoomSizingVelocity, smoothZoomIn);
-        chromaticAberration.intensity.value = Mathf.SmoothDamp(chromaticAberration.intensity.value, 0.3f, ref chromaticAberrationIntensityVelocity, smoothZoomIn);
-        colorAdjustments.saturation.value = Mathf.SmoothDamp(colorAdjustments.saturation.value, 0.0f, ref colorAdjustmentsSaturationVelocity, smoothZoomIn);
+        chromaticAberration.intensity.value = Mathf.SmoothDamp(chromaticAberration.intensity.value, defaultChromaticAberration, ref chromaticAberrationIntensityVelocity, smoothZoomIn);
+        colorAdjustments.saturation.value = Mathf.SmoothDamp(colorAdjustments.saturation.value, defaultSaturationValue, ref colorAdjustmentsSaturationVelocity, smoothZoomIn);
         cam.orthographicSize = size;
 
-        if (cam.orthographicSize == minZoomOut)
+        if (cam.orthographicSize == minZoomOut && colorAdjustments.saturation.value == defaultSaturationValue && chromaticAberration.intensity.value == defaultChromaticAberration)
             defaultZoom = false;
     }
 }

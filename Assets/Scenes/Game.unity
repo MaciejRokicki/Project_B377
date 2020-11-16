@@ -1216,6 +1216,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2db320f4946bd742ad376ca759ac42d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultChromaticAberration: 0.3
+  targetValueChromaticAberration: 1
+  defaultSaturationValue: 0
+  targetSaturationValue: -60
   smoothTimeX: 0.1
   smoothTimeY: 0.1
   isMinPositionY: 1
