@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if(canMove)
+        if(canMove && Time.timeScale != 0.0f)
         {
             if (Input.GetMouseButtonDown(0))
             {

@@ -61,26 +61,6 @@ public class GameManager : MonoBehaviour
         playerObj.GetComponent<PlayerController>().canMove = true;
     }
 
-    private int avgFrameRate;
-    public Text tx;
-
-    private float refresh = 0;
-
-    private void Update()
-    {
-        if(refresh >= .2f)
-        {
-            float current = 0;
-            current = (int)(1f / Time.unscaledDeltaTime);
-            avgFrameRate = (int)current;
-            tx.text = avgFrameRate.ToString();
-            refresh = 0.0f;
-        }
-
-
-        refresh += Time.deltaTime;
-    }
-
     public void GenerateChunk(Vector2 position)
     {
         GameObject newChunk = Instantiate(chunk, position, Quaternion.identity);

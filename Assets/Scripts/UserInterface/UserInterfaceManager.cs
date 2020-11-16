@@ -107,8 +107,8 @@ public class UserInterfaceManager : MonoBehaviour
         pauseUI.SetActive(true);
         GameInterfaceDisable();
         Time.timeScale = 0.0f;
-        GameObject.Find("PauseBackground/YourScoreLabel/YourScoreValue").GetComponent<TextMeshProUGUI>().text = gameManager.score.ToString();
-        GameObject.Find("PauseBackground/BrokenBlocksLabel/BrokenBlocksValue").GetComponent<TextMeshProUGUI>().text = gameManager.brokenBlocks.ToString();
+        GameObject.Find("PauseBackground/YourScoreBackground/YourScoreValue").GetComponent<TextMeshProUGUI>().text = gameManager.score.ToString();
+        GameObject.Find("PauseBackground/BrokenBlocksBackground/BrokenBlocksValue").GetComponent<TextMeshProUGUI>().text = gameManager.brokenBlocks.ToString();
         yield return null;
     }
 

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Trail_0002
   m_EditorClassIdentifier: 
   id: 2
+  sprite: {fileID: 21300000, guid: ac07664cc8fce574c8571899c496c5c7, type: 3}
   material: {fileID: 2100000, guid: cc393d5d48fa67e4dbf8b4db3b5982db, type: 2}
   TextureMode: 0
   cost: 50

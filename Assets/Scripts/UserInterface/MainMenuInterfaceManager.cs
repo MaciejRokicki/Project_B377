@@ -13,6 +13,9 @@ public class MainMenuInterfaceManager : MonoBehaviour
 
     public GameObject StoreItemPrefab;
 
+    public GameObject Panels;
+    public GameObject Buttons;
+    public GameObject NeonBlocksValue;
     public GameObject StoreUI;
     public GameObject StorePlayerSpritesUI;
     public GameObject StorePlayerTrailsUI;
@@ -49,6 +52,8 @@ public class MainMenuInterfaceManager : MonoBehaviour
 
     private IEnumerator StoreHandle()
     {
+        Panels.SetActive(false);
+        Buttons.SetActive(false);
         StoreUI.SetActive(true);
 
         if (StorePlayerSpritesUI.activeSelf)
@@ -69,7 +74,7 @@ public class MainMenuInterfaceManager : MonoBehaviour
 
     private IEnumerator StoreChangeHandle()
     {
-        TextMeshProUGUI openedStoreCategoryText = GameObject.Find("Store/StoreHeader/ButtonStoreChangeFade/ButtonStoreChange/ButtonStoreChangeText").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI openedStoreCategoryText = GameObject.Find("Store/StoreHeader/ButtonStoreChange/ButtonStoreChangeText").GetComponent<TextMeshProUGUI>();
 
         if (StorePlayerSpritesUI.activeSelf)
         {
@@ -99,6 +104,8 @@ public class MainMenuInterfaceManager : MonoBehaviour
 
     private IEnumerator StoreBackHandle()
     {
+        Panels.SetActive(true);
+        Buttons.SetActive(true);
         StoreUI.SetActive(false);
         yield return null;
     }
@@ -126,10 +133,12 @@ public class MainMenuInterfaceManager : MonoBehaviour
 
                 rt.anchoredPosition = new Vector2(0.0f, -150.0f - (i * 340.0f));
 
-                image.sprite = startup.playerSprites[i].sprite;
-                costValue.text = $"{startup.playerSprites[i].cost}";
-
                 PlayerSprite playerSprite = startup.playerSprites.Where(x => x.id == i).First();
+
+                image.sprite = playerSprite.sprite;
+                image.material = playerSprite.material;
+                costValue.text = $"{playerSprite.cost}";
+
 
                 if (startup.ownedPlayerSpirtes.Contains(i))
                 {
@@ -233,10 +242,11 @@ public class MainMenuInterfaceManager : MonoBehaviour
 
                 rt.anchoredPosition = new Vector2(0.0f, -150.0f - (i * 340.0f));
 
-                image.sprite = startup.playerTrails[i].sprite;
-                costValue.text = $"{startup.playerTrails[i].cost}";
-
                 PlayerTrail playerTrail = startup.playerTrails.Where(x => x.id == i).First();
+
+                image.sprite = playerTrail.sprite;
+                image.material = playerTrail.material;
+                costValue.text = $"{playerTrail.cost}";
 
                 if (startup.ownedPlayerTrails.Contains(playerTrail.id))
                 {
@@ -322,6 +332,6 @@ public class MainMenuInterfaceManager : MonoBehaviour
         int nb = startup.GetNeonBlocks();
 
         GameObject.Find("StoreNeonBlocksLabel").GetComponent<TextMeshProUGUI>().text = $"NB: {nb}";
-        GameObject.Find("NeonBlocksText").GetComponent<TextMeshProUGUI>().text = nb.ToString();
+        NeonBlocksValue.GetComponent<TextMeshProUGUI>().text = nb.ToString();
     }
 }
