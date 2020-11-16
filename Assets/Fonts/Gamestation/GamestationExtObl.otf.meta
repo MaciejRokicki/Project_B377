@@ -1,0 +1,27 @@
+fileFormatVersion: 2
+guid: 75274371cc30d4a4b8c689208000e207
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Gamestation
+  fontNames:
+  - Gamestation
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 2fd57b37b11a3a74f9bfad492f38af73, type: 3}
+  - {fileID: 12800000, guid: 539033aafb282b2488e5412a51ecfba1, type: 3}
+  - {fileID: 12800000, guid: 0405959c16db0304797a9b8638670d23, type: 3}
+  - {fileID: 12800000, guid: 422345fef881a634588fac13e38b47ff, type: 3}
+  - {fileID: 12800000, guid: 2014178f4b589b642979fb95ca93f073, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
