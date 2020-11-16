@@ -48,7 +48,7 @@ Material:
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
     m_Colors:
-    - Color_FE9DFBC6: {r: 0.6270569, g: 2.828427, b: 2.1239886, a: 0}
+    - Color_FE9DFBC6: {r: 1.0204521, g: 4.237095, b: 3.2166426, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
