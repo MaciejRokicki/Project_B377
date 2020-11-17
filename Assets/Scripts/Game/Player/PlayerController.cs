@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
             isMousePressed = false;
         }
 
-        rb.rotation += Time.timeScale * rb.velocity.magnitude / 5;
+        rb.rotation -= Time.timeScale * rb.velocity.magnitude / 1.5f;
     }
 
     private void Update()

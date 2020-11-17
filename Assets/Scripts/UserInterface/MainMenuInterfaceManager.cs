@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 using TMPro;
+using System;
 
 public class MainMenuInterfaceManager : MonoBehaviour
 {
@@ -133,17 +134,15 @@ public class MainMenuInterfaceManager : MonoBehaviour
 
                 rt.anchoredPosition = new Vector2(0.0f, -150.0f - (i * 340.0f));
 
-                PlayerSprite playerSprite = startup.playerSprites.Where(x => x.id == i).First();
+                PlayerSprite playerSprite = startup.playerSprites[i];
 
                 image.sprite = playerSprite.sprite;
                 image.material = playerSprite.material;
                 costValue.text = $"{playerSprite.cost}";
 
-
-                if (startup.ownedPlayerSpirtes.Contains(i))
+                if (startup.ownedPlayerSpirtes.Contains(playerSprite.id))
                 {
                     costValue.text = "Posiadane";
-
                     buttonLabel.text = "Użyj";
 
                     button.onClick.AddListener(() =>
@@ -184,14 +183,16 @@ public class MainMenuInterfaceManager : MonoBehaviour
     private void UsePlayerSprite(int id)
     {
         PlayerSprite playerSpriteTmp = startup.currentPlayerSprite;
-        startup.currentPlayerSprite = startup.playerSprites[id];
+        startup.currentPlayerSprite = startup.playerSprites.Where(x => x.id == id).First();
         RefreshUsePlayerSpriteLabels(playerSpriteTmp.id, id);
     }
 
     private void RefreshBuyPlayerSpriteLabels(int id)
     {
-        Button button = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({id})/Panel/ButtonBuy").GetComponent<Button>();
-        TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({id})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
+        int storeItemId = Array.FindIndex(startup.playerSprites, x => x.id == id);
+
+        Button button = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({storeItemId})/Panel/ButtonBuy").GetComponent<Button>();
+        TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({storeItemId})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
 
         buttonLabel.text = "Użyj";
 
@@ -203,14 +204,17 @@ public class MainMenuInterfaceManager : MonoBehaviour
 
     private void RefreshUsePlayerSpriteLabels(int currentId, int targetId)
     {
-        Button button = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({currentId})/Panel/ButtonBuy").GetComponent<Button>();
-        TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({currentId})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
+        int currentStoreItemId = Array.FindIndex(startup.playerSprites, x => x.id == currentId);
+        int targetStoreItemId = Array.FindIndex(startup.playerSprites, x => x.id == targetId);
+
+        Button button = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({currentStoreItemId})/Panel/ButtonBuy").GetComponent<Button>();
+        TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({currentStoreItemId})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
 
         button.interactable = true;
         buttonLabel.text = "Użyj";
 
-        button = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({targetId})/Panel/ButtonBuy").GetComponent<Button>();
-        buttonLabel = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({targetId})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
+        button = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({targetStoreItemId})/Panel/ButtonBuy").GetComponent<Button>();
+        buttonLabel = GameObject.Find($"PlayerSpritesScrollView/Viewport/Content/StoreItem ({targetStoreItemId})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
 
         button.interactable = false;
         buttonLabel.text = "Używane";
@@ -242,7 +246,7 @@ public class MainMenuInterfaceManager : MonoBehaviour
 
                 rt.anchoredPosition = new Vector2(0.0f, -150.0f - (i * 340.0f));
 
-                PlayerTrail playerTrail = startup.playerTrails.Where(x => x.id == i).First();
+                PlayerTrail playerTrail = startup.playerTrails[i];
 
                 image.sprite = playerTrail.sprite;
                 image.material = playerTrail.material;
@@ -251,7 +255,6 @@ public class MainMenuInterfaceManager : MonoBehaviour
                 if (startup.ownedPlayerTrails.Contains(playerTrail.id))
                 {
                     costValue.text = "Posiadane";
-
                     buttonLabel.text = "Użyj";
 
                     button.onClick.AddListener(() =>
@@ -299,8 +302,10 @@ public class MainMenuInterfaceManager : MonoBehaviour
 
     private void RefreshBuyPlayerTrailLabels(int id)
     {
-        Button button = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({id})/Panel/ButtonBuy").GetComponent<Button>();
-        TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({id})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
+        int storeItemId = Array.FindIndex(startup.playerTrails, x => x.id == id);
+
+        Button button = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({storeItemId})/Panel/ButtonBuy").GetComponent<Button>();
+        TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({storeItemId})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
 
         buttonLabel.text = "Użyj";
 
@@ -312,14 +317,17 @@ public class MainMenuInterfaceManager : MonoBehaviour
 
     private void RefreshUsePlayerTrailLabels(int currentId, int targetId)
     {
-        Button button = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({currentId})/Panel/ButtonBuy").GetComponent<Button>();
-        TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({currentId})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
+        int currentStoreItemId = Array.FindIndex(startup.playerTrails, x => x.id == currentId);
+        int targetStoreItemId = Array.FindIndex(startup.playerTrails, x => x.id == targetId);
+
+        Button button = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({currentStoreItemId})/Panel/ButtonBuy").GetComponent<Button>();
+        TextMeshProUGUI buttonLabel = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({currentStoreItemId})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
 
         button.interactable = true;
         buttonLabel.text = "Użyj";
 
-        button = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({targetId})/Panel/ButtonBuy").GetComponent<Button>();
-        buttonLabel = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({targetId})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
+        button = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({targetStoreItemId})/Panel/ButtonBuy").GetComponent<Button>();
+        buttonLabel = GameObject.Find($"PlayerTrailsScrollView/Viewport/Content/StoreItem ({targetStoreItemId})/Panel/ButtonBuy/ButtonBuyLabel").GetComponent<TextMeshProUGUI>();
 
         button.interactable = false;
         buttonLabel.text = "Używane";
