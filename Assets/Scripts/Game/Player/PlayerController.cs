@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour
     private LineRenderer lineRenderer;
     private TrailRenderer trailRenderer;
     private Animation anim;
-    private ParticleSystem particle;
     public float playerMovementSpeedMultiplier = 5.0f;
     public float minArrowDistance = 3.0f;
     public float maxArrowDistance = 12.0f;
@@ -36,7 +35,6 @@ public class PlayerController : MonoBehaviour
         this.lineRenderer = this.gameObject.GetComponent<LineRenderer>();
         this.trailRenderer = this.gameObject.GetComponent<TrailRenderer>();
         this.anim = this.gameObject.GetComponent<Animation>();
-        this.particle = this.gameObject.GetComponent<ParticleSystem>();
 
         this.GetComponent<SpriteRenderer>().sprite = startup.currentPlayerSprite.sprite;
         this.GetComponent<SpriteRenderer>().material = startup.currentPlayerSprite.material;
@@ -163,10 +161,9 @@ public class PlayerController : MonoBehaviour
         this.rb.constraints = RigidbodyConstraints2D.FreezeAll;
         this.trailRenderer.emitting = false;
 
-        this.particle.Play();
         this.anim.Play("PlayerDestroy");
 
-        Destroy(this.gameObject, particle.main.duration + particle.main.startLifetimeMultiplier);
+        Destroy(this.gameObject, anim.GetClip("PlayerDestroy").length);
 
         PlayerPrefsManager.SetHighScore(gameManager.score);
         startup.IncreaseNeonBlocks(gameManager.neonBlocks);

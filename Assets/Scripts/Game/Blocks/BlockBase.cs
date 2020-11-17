@@ -3,7 +3,6 @@
 public class BlockBase : MonoBehaviour
 {
     internal GameManager gameManager;
-    internal ParticleSystem particle;
     internal Animation anim;
     internal PlayerController playerController;
     internal Rigidbody2D playerRigidbody;
@@ -13,7 +12,6 @@ public class BlockBase : MonoBehaviour
     public virtual void Awake()
     {
         this.gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        this.particle = this.gameObject.GetComponent<ParticleSystem>();
         this.anim = this.gameObject.GetComponent<Animation>();
         this.playerController = GameObject.Find("Player").GetComponent<PlayerController>();
         this.playerRigidbody = GameObject.Find("Player").GetComponent<Rigidbody2D>();
@@ -23,27 +21,19 @@ public class BlockBase : MonoBehaviour
     {
         if (col.gameObject.name == "Player")
         {
-            if (this.gameObject.GetComponent<ParticleSystem>())
-            {
-                this.particle.Play();
+            anim.Play("BlockSizing");
 
-                var ps = this.particle.main;
-                float totalDuration = (ps.duration + ps.startLifetimeMultiplier) * .8f;
+            this.gameObject.GetComponent<BoxCollider2D>().isTrigger = true;
 
-                anim.Play("BlockSizing");
+            gameManager.brokenBlocks++;
+            gameManager.IncreaseScore(this.gameObject.transform.position, points);
 
-                this.gameObject.GetComponent<BoxCollider2D>().isTrigger = true;
+            playerController.scoreCombo = true;
 
-                gameManager.brokenBlocks++;
-                gameManager.IncreaseScore(this.gameObject.transform.position, points);
+            if (playerController.scoreCombo)
+                gameManager.IncreaseScoreMultiplier(1);
 
-                playerController.scoreCombo = true;
-
-                if (playerController.scoreCombo)
-                    gameManager.IncreaseScoreMultiplier(1);
-
-                Destroy(this.gameObject, totalDuration);
-            }
+            Destroy(this.gameObject, anim.GetClip("BlockSizing").length);
         }
     }
 }
