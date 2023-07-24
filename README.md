@@ -7,7 +7,7 @@ Zaimplementowano również sklep pozwalający na personalizację wyglądu gracza
 Poszczególne elementy kosmetyczne kupuje się za walutę, którą gracz może pozyskać poprzez zbijanie niebieskich bloków.
 Jest to gra przeznaczona na telefony komórkowe z systemem operacyjnym android.
 
-Jest to jeden z pierwszych projektów, wykorzystujący URP, proste animacje, scriptableobject'y, playerprefs do zapisu stanu gry.
+Jest to jeden z pierwszych projektów, wykorzystujący URP, proste animacje, scriptableobject'y, playerprefs do zapisu stanu gry, trail renderer, fizykę 2D.
 
 ### Android build
 https://github.com/MaciejRokicki/Project_B377/releases/download/v1.0.0/B377.apk
