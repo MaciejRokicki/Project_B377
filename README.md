@@ -1,5 +1,6 @@
 # B_377
 
+#### Założenia gry
 Prosta gra polegająca na zbijaniu losowo pojawiających się bloków przy jednoczesnym omijaniu czerwonych bloków oraz czerwonej lini podążającej za graczem od dołu.
 Dodatkowo umieszczono różnego rodzaju modyfikatory - bloki odbijające gracza z większą siła (fioletowe), bloki przyśpieszjące gracza (przezroczysty pomarańcz), pola przyciągające oraz wypychające gracza (jasny niebieski i różowy).
 Żółte bloki są blokami zwiększającymi punktację gracza.
@@ -7,6 +8,7 @@ Zaimplementowano również sklep pozwalający na personalizację wyglądu gracza
 Poszczególne elementy kosmetyczne kupuje się za walutę, którą gracz może pozyskać poprzez zbijanie niebieskich bloków.
 Jest to gra przeznaczona na telefony komórkowe z systemem operacyjnym android.
 
+#### Aspekt techniczny
 Jest to jeden z pierwszych projektów, wykorzystujący URP, proste animacje, scriptableobject'y, playerprefs do zapisu stanu gry, trail renderer, fizykę 2D.
 
 ### Android build
